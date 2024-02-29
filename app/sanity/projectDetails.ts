@@ -6,27 +6,27 @@
 declare global {
   interface Window {
     ENV: {
-      SANITY_PROJECT_ID: string
-      SANITY_DATASET: string
-      SANITY_API_VERSION: string
-      SANITY_FRONTEND_URL: string
-      SANITY_URL: string
-    }
+      SANITY_PROJECT_ID: string;
+      SANITY_DATASET: string;
+      SANITY_API_VERSION: string;
+      SANITY_FRONTEND_URL: string;
+      SANITY_URL: string;
+    };
   }
 }
 
-const {SANITY_PROJECT_ID, SANITY_DATASET, SANITY_API_VERSION} =
-  typeof document === 'undefined' ? process.env : window.ENV
+const { SANITY_PROJECT_ID, SANITY_DATASET, SANITY_API_VERSION } =
+  typeof document === 'undefined' ? process.env : window.ENV;
 
-export const projectId = SANITY_PROJECT_ID!
-export const dataset = SANITY_DATASET!
-export const apiVersion = SANITY_API_VERSION ?? `2024-02-13`
+export const projectId = SANITY_PROJECT_ID!;
+export const dataset = SANITY_DATASET!;
+export const apiVersion = SANITY_API_VERSION ?? `2024-02-13`;
 
 export const projectDetails = () => ({
   projectId,
   dataset,
   apiVersion,
-})
+});
 
 // Enable stega on production deploys, but NOT the non-production domain
 // Allow the production Studio to access non-production domains cross-origin
@@ -37,7 +37,8 @@ export const projectDetails = () => ({
 // <git-repo-slug>-<sha>-<username>.vercel.app
 
 // This is used to enable stega on any URL except this one
-export const PRODUCTION_URL = 'https://sanity-remix-template.sanity.build'
+export const PRODUCTION_URL = 'https://sanity-remix-template.sanity.build';
+console.log(process.env);
 
 // This is the front end URL that should display inside Presentation
 export const getFrontendUrl =
@@ -45,9 +46,9 @@ export const getFrontendUrl =
     ? process.env.VERCEL
       ? `https://${process.env.VERCEL_BRANCH_URL}`
       : process.env.SANITY_FRONTEND_URL!
-    : window.ENV.SANITY_FRONTEND_URL!
+    : window.ENV.SANITY_FRONTEND_URL!;
 
-export const frontendUrl = getFrontendUrl ?? 'http://localhost:3000'
+export const frontendUrl = getFrontendUrl ?? 'http://localhost:3000';
 
 // This is the Studio URL that will be allowed to access the front end URL
 export const getStudioUrl =
@@ -57,13 +58,13 @@ export const getStudioUrl =
         ? `https://${process.env.VERCEL_URL}`
         : PRODUCTION_URL
       : process.env.SANITY_URL!
-    : window.ENV.SANITY_URL!
+    : window.ENV.SANITY_URL!;
 
-export const studioUrl = getStudioUrl ?? 'http://localhost:3000'
+export const studioUrl = getStudioUrl ?? 'http://localhost:3000';
 
 // If any of these values are missing, throw errors as the app requires them
-if (!projectId) throw new Error('Missing SANITY_PROJECT_ID in .env')
-if (!dataset) throw new Error('Missing SANITY_DATASET in .env')
-if (!apiVersion) throw new Error('Missing SANITY_API_VERSION in .env')
-if (!frontendUrl) throw new Error('Missing SANITY_FRONTEND_URL in .env')
-if (!studioUrl) throw new Error('Missing SANITY_URL in .env')
+if (!projectId) throw new Error('Missing SANITY_PROJECT_ID in .env');
+if (!dataset) throw new Error('Missing SANITY_DATASET in .env');
+if (!apiVersion) throw new Error('Missing SANITY_API_VERSION in .env');
+if (!frontendUrl) throw new Error('Missing SANITY_FRONTEND_URL in .env');
+if (!studioUrl) throw new Error('Missing SANITY_URL in .env');
