@@ -7,7 +7,7 @@ import { locate } from '~/sanity/presentation/locate';
 import { frontendUrl, projectDetails } from '~/sanity/projectDetails';
 import schema from '~/sanity/schema';
 import { defaultDocumentNode, structure } from '~/sanity/structure';
-console.log(frontendUrl);
+
 export const config = defineConfig({
   ...projectDetails(),
   name: 'sanity-remix',

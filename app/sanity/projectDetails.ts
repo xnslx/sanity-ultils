@@ -38,7 +38,6 @@ export const projectDetails = () => ({
 
 // This is used to enable stega on any URL except this one
 export const PRODUCTION_URL = 'https://sanity-remix-template.sanity.build';
-console.log(process.env);
 
 // This is the front end URL that should display inside Presentation
 export const getFrontendUrl =
