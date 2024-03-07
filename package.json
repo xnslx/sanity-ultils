@@ -36,6 +36,7 @@
     "react-dom": "^18.2.0",
     "sanity": "^3.24.1",
     "sanity-plugin-iframe-pane": "^2.6.1",
+    "sanity-plugin-tags": "^2.0.1",
     "satori": "^0.10.11",
     "styled-components": "^6.1.8",
     "zod": "^3.22.4"

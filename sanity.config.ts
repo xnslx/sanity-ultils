@@ -8,6 +8,8 @@ import { frontendUrl, projectDetails } from '~/sanity/projectDetails';
 import schema from '~/sanity/schema';
 import { defaultDocumentNode, structure } from '~/sanity/structure';
 
+// import { tags } from 'sanity-plugin-tags';
+
 export const config = defineConfig({
   ...projectDetails(),
   name: 'sanity-remix',
@@ -19,6 +21,7 @@ export const config = defineConfig({
       locate,
     }),
     visionTool(),
+    // tags({}),
   ],
   basePath: `/studio`,
   schema: {
