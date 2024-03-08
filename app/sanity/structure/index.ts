@@ -8,34 +8,13 @@ import OGPreview from '~/sanity/components/OGPreview';
 import { resolveOGUrl } from '~/sanity/structure/resolveOGUrl';
 
 import { client } from '~/sanity/client';
+import tags from '~/sanity/structure/tagStructure';
+import author from '~/sanity/structure/authorStructure';
 
-const tagsStructure: StructureResolver = (S) =>
-  S.listItem()
-    .title('Group by Tags')
-    .icon(Hourglass)
-    .child(async () => {
-      const data = await client.fetch(`*[_type == 'tags']`);
-      const tagsList = await data.map((d: any) => d.tags).flat();
-      const newTagsList = [...new Set(tagsList)].map((d) => d);
-      return S.list()
-        .title('By Tags')
-        .items(
-          newTagsList.map((n) =>
-            S.listItem()
-              .title(`${n}`)
-              .icon(Tags)
-              .child(async (singleTag) => {
-                return S.documentList()
-                  .title('Posts')
-                  .filter(
-                    '_type == "post" && count((tags[]->tags)[@ in ["Javascript"]]) > 0'
-                  );
-              })
-          )
-        );
-    });
+const hiddenDocTypes = (listItem: { getId: () => string }) =>
+  !['home'].includes(listItem.getId());
 
-export const structure: StructureResolver = (S) =>
+export const structure: StructureResolver = (S, context) =>
   S.list()
     .id('root')
     .title('Content')
@@ -48,51 +27,11 @@ export const structure: StructureResolver = (S) =>
         .title('Home'),
       S.divider(),
       // Document lists
-      S.documentTypeListItem('post').title('Posts').icon(Disc),
-      S.documentTypeListItem('tags').title('Tags').icon(Disc),
+      tags(S, context),
+      author(S, context),
       S.divider(),
-      S.listItem()
-        .title('Group by Tags')
-        .icon(Hourglass)
-        .child(async () => {
-          const data = await client.fetch(`*[_type == 'tags']`);
-          const tagsList = await data.map((d: any) => d.tags).flat();
-          const newTagsList = [...new Set(tagsList)].map((d) => d);
-          return S.list()
-            .title('By Tags')
-            .items(
-              newTagsList.map((n) =>
-                S.listItem()
-                  .title(`${n}`)
-                  .icon(Tags)
-                  .child(async (singleTag) => {
-                    return S.documentList()
-                      .title('Posts')
-                      .filter(
-                        '_type == "post" && count((tags[]->tags)[@ in [$tag]]) > 0'
-                      )
-                      .params({
-                        tag: n,
-                      });
-                  })
-              )
-            );
-        }),
-      S.listItem()
-        .title('Group by Authors')
-        .icon(Tags)
-        .child(
-          S.documentTypeList('author')
-            .title('Author')
-            .child((authorId) => {
-              console.log('authorId', authorId);
-              return S.documentList()
-                .title('Posts')
-                .filter('_type == "post" && $authorId == author._ref')
-                .params({ authorId });
-            })
-        ),
-      S.divider(),
+      //@ts-ignore
+      ...S.documentTypeListItems().filter(hiddenDocTypes),
     ]);
 
 export const defaultDocumentNode: DefaultDocumentNodeResolver = (

@@ -7,14 +7,4 @@ import { postType } from '~/sanity/schema/postType';
 import { authorType } from '~/sanity/schema/authorType';
 import { singlePostType } from './singlePostType';
 import { tagsType } from './tagsType';
-export default [
-  artistType,
-  genreType,
-  homeType,
-  recordType,
-  trackType,
-  postType,
-  authorType,
-  singlePostType,
-  tagsType,
-];
+export default [homeType, postType, authorType, singlePostType, tagsType];
