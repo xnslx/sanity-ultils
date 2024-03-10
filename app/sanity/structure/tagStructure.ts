@@ -1,12 +1,5 @@
-import { Disc, Home, Hourglass, Tags, Users } from 'lucide-react';
-import type {
-  DefaultDocumentNodeResolver,
-  ListItemBuilder,
-  StructureResolver,
-} from 'sanity/structure';
-
-import OGPreview from '~/sanity/components/OGPreview';
-import { resolveOGUrl } from '~/sanity/structure/resolveOGUrl';
+import { Hourglass, Tags } from 'lucide-react';
+import type { ListItemBuilder } from 'sanity/structure';
 
 import { client } from '~/sanity/client';
 import defineStructure from '../utils/defineStructure';

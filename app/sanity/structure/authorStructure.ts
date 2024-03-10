@@ -19,7 +19,6 @@ export default defineStructure<ListItemBuilder>((S) =>
       S.documentTypeList('author')
         .title('Author')
         .child((authorId) => {
-          console.log('authorId', authorId);
           return S.documentList()
             .title('Posts')
             .filter('_type == "post" && $authorId == author._ref')
