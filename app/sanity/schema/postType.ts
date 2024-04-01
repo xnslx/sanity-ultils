@@ -6,17 +6,6 @@ import { authorType } from './authorType';
 import { tagsType } from './tagsType';
 import TagThemePreview from '../components/TagTheme';
 
-/**
- * This file is the schema definition for a post.
- *
- * Here you'll be able to edit the different fields that appear when you 
- * create or edit a post in the studio.
- * 
- * Here you can see the different schema types that are available:
-
-  https://www.sanity.io/docs/schema-types
-
- */
 
 export const postType = defineType({
   name: 'post',

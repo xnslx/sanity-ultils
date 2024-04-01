@@ -11,11 +11,11 @@ export default defineStructure<ListItemBuilder>((S) =>
     .child(async () => {
       const data = await client.fetch(`*[_type == 'tags']`);
       const tagsList = await data.map((d: any) => d.tags).flat();
-      const newTagsList = [...new Set(tagsList)].map((d) => d);
+      // const newTagsList = [...new Set(tagsList)].map((d) => d);
       return S.list()
         .title('By Tags')
         .items(
-          newTagsList.map((n) =>
+          tagsList.map((n: any) =>
             S.listItem()
               .title(`${n}`)
               .icon(Tags)
