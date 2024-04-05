@@ -1,6 +1,6 @@
-import groq from 'groq'
+import groq from 'groq';
 
-export const HOME_QUERY = groq`*[_id == "home"][0]{ title, siteTitle }`
+export const HOME_QUERY = groq`*[_id == "home"][0]{ title, siteTitle }`;
 
 export const RECORDS_QUERY = groq`*[_type == "record"][0...12]|order(title asc){
     _id,
@@ -10,7 +10,7 @@ export const RECORDS_QUERY = groq`*[_type == "record"][0...12]|order(title asc){
     "slug": slug.current,
     "artist": artist->name,
     image
-  } | order(releaseDate desc)`
+  } | order(releaseDate desc)`;
 
 export const RECORD_QUERY = groq`*[_type == "record" && slug.current == $slug][0]{
   _id,
@@ -34,4 +34,25 @@ export const RECORD_QUERY = groq`*[_type == "record" && slug.current == $slug][0
     title,
     duration
   }
-}`
+}`;
+export const CAROUSELS_QUERY = groq`*[_type == "home"][0]{
+  isShowCarousels,
+  carouselsList{
+    _type,
+    "carousels":carousels[]{
+      ...,
+      "carouselItems": carouselItems[]{
+        ...,
+        _type == 'image' => {
+        ...,
+        "altText": asset->altText,
+        "blurDataURL": asset->metadata.lqip,
+        'height': asset->metadata.dimensions.height,
+        'url': asset->url,
+        'width': asset->metadata.dimensions.width,
+        'hashURL': asset-> metadata.blurHash
+        }
+      }
+    }
+  }
+}`;

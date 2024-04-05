@@ -1,0 +1,109 @@
+.embla {
+  @apply relative;
+  --slide-spacing: 1rem;
+  --slide-size: 100%;
+  --slide-height: 100vh;
+}
+.embla__nested {
+  @apply relative max-w-full max-h-screen mx-auto;
+
+  /* background-color: #f7f799; */
+}
+.embla__viewport {
+  @apply overflow-hidden w-full;
+}
+
+.embla__container {
+  @apply flex flex-row h-screen min-w-0 max-w-full;
+  -webkit-touch-callout: none;
+  -khtml-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.embla__container__nested {
+  @apply flex flex-col select-none;
+  height: calc(var(--slide-spacing) + var(--slide-height));
+}
+.embla__slide {
+  @apply relative  min-w-0;
+  flex: 0 0 var(--slide-size);
+}
+.embla__slide__nested {
+  @apply relative min-w-full  overflow-hidden;
+  flex: 0 0 var(--slide-size);
+  min-height: 0;
+}
+
+.embla__slide__inner {
+  @apply relative overflow-hidden h-full;
+}
+
+.embla__slide__inner__nested {
+  @apply relative overflow-hidden h-full;
+}
+
+.embla__slide__img__nested {
+  display: block;
+  height: var(--slide-height);
+  width: 100%;
+  object-fit: cover;
+}
+
+.embla__button {
+  @apply cursor-pointer bg-transparent touch-manipulation absolute z-[1] -translate-y-2/4 w-[30px] h-[30px] justify-center items-center fill-[#1bcacd] p-0 border-0 top-2/4 disabled:cursor-default disabled:opacity-30;
+  outline: 0;
+}
+.embla__button__svg {
+  @apply w-full h-full;
+}
+.embla__button__prev {
+  @apply -left-40;
+}
+.embla__button__next {
+  @apply -right-40;
+}
+.embla__dots {
+  @apply flex justify-center float-right rotate-90 pt-[100px];
+  list-style: none;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+}
+.embla__dot {
+  @apply bg-transparent cursor-pointer relative w-1 h-1 flex items-center mx-[7.5px] p-0 border-0 after:bg-black after:w-full after:h-1 after:content-[''] after:rounded-sm;
+  outline: 0;
+}
+.embla__dot.is-selected:after {
+  @apply bg-black opacity-100;
+}
+.menu {
+  @apply text-2xl ml-32;
+}
+@media only screen and (max-width: 768px) {
+  .menu {
+    @apply text-[2rem] float-left ml-0;
+  }
+  .embla__button__prev {
+    @apply left-[-280px];
+  }
+  .embla__button__next {
+    @apply right-[-280px];
+  }
+}
+.prevBtn {
+  @apply bg-transparent cursor-pointer touch-manipulation absolute z-[1] justify-center items-center border-none scale-[0.15] top-[40%] disabled:cursor-default disabled:opacity-30;
+
+  /* background-color: #1bcacd; */
+}
+.nextBtn {
+  @apply bg-transparent cursor-pointer absolute z-[1] justify-center items-center border-none scale-[0.15] left-[60%] top-[40%] disabled:cursor-default disabled:opacity-30;
+
+  /* padding-left:-8rem; */
+}
+
+.video {
+  display: block;
+  height: var(--slide-height);
+  width: 100%;
+  object-fit: cover;
+}

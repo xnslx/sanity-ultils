@@ -2,6 +2,7 @@ import { presentationTool } from '@sanity/presentation';
 import { visionTool } from '@sanity/vision';
 import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
+import { unsplashImageAsset } from 'sanity-plugin-asset-source-unsplash';
 
 import { locate } from '~/sanity/presentation/locate';
 import { frontendUrl, projectDetails } from '~/sanity/projectDetails';
@@ -21,6 +22,7 @@ export const config = defineConfig({
       locate,
     }),
     visionTool(),
+    unsplashImageAsset(),
     // tags({}),
   ],
   basePath: `/studio`,

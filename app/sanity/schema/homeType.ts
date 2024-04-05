@@ -15,6 +15,23 @@ export const homeType = defineType({
       type: 'array',
       of: [{ type: 'singlePost' }],
     }),
+    defineField({
+      title: 'Show Carousels?',
+      name: 'isShowCarousels',
+      type: 'boolean',
+      description:
+        'If show carousels, the posts will not be seen on the frontend',
+      initialValue: false,
+    }),
+    defineField({
+      title: 'Carousel List',
+      name: 'carouselsList',
+      type: 'carousels',
+      hidden: ({ parent }) => {
+        console.log('parent', parent);
+        return !parent?.isShowCarousels;
+      },
+    }),
   ],
   preview: {
     prepare() {
