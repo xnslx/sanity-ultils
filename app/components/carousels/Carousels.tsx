@@ -50,11 +50,45 @@ export default function Carousels({ data }: any) {
     setNextBtnEnabled(embla.canScrollNext());
   }, [embla]);
 
+  const onScroll = useCallback(() => {
+    if (!embla) return;
+
+    const engine = embla.internalEngine();
+    console.log('engine', engine);
+    const {
+      limit,
+      target,
+      location,
+      offsetLocation,
+      scrollTo,
+      translate,
+      scrollBody,
+    } = engine;
+    let edge: number | null = null;
+
+    if (limit.reachedMax(location.get())) edge = limit.max;
+    if (limit.reachedMin(location.get())) edge = limit.min;
+
+    if (edge !== null) {
+      offsetLocation.set(edge);
+      location.set(edge);
+      target.set(edge);
+      translate.to(edge);
+      translate.toggleActive(false);
+      scrollBody.useDuration(0).useFriction(0);
+      scrollTo.distance(0, false);
+    } else {
+      translate.toggleActive(true);
+    }
+  }, [embla]);
+
   useEffect(() => {
     if (!embla) return;
     embla.on('select', onSelect);
+    embla.on('scroll', onScroll);
     onSelect();
-  }, [embla, onSelect]);
+    onScroll();
+  }, [embla, onSelect, onScroll]);
 
   return (
     <>
@@ -81,6 +115,7 @@ export default function Carousels({ data }: any) {
                 },
                 index: React.Key | null | undefined
               ) => {
+                console.log('84', index);
                 return (
                   <div className="embla__slide" key={index}>
                     <NestedCarousel
