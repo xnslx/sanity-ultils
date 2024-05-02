@@ -19,7 +19,7 @@
   @apply flex flex-row h-screen min-w-0 max-w-full max-h-full;
 }
 .embla__container__nested {
-  @apply flex flex-col select-none;
+  @apply flex flex-col select-none relative min-w-full;
   height: calc(var(--slide-spacing) + var(--slide-height));
 }
 .embla__slide {
@@ -67,7 +67,7 @@
 .embla__button__next {
   @apply -right-40;
 }
-.embla__dots {
+/* .embla__dots {
   @apply flex justify-center float-right rotate-90 pt-[100px];
   list-style: none;
   -webkit-transform: rotate(90deg);
@@ -81,6 +81,51 @@
 }
 .embla__dot.is-selected:after {
   @apply bg-black opacity-100;
+} */
+
+.embla__dots {
+  display: flex;
+  list-style: none;
+  justify-content: center;
+  float: right;
+  padding-top: 100px;
+  margin-top: -100px;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.embla__dot {
+  background-color: transparent;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+  outline: 0;
+  border: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 7.5px;
+  margin-left: 7.5px;
+  display: flex;
+  align-items: center;
+}
+
+.embla__dot:after {
+  background-color: #efefef;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  content: '';
+}
+
+.embla__dot.is-selected:after {
+  background-color: #000000;
+  /* outline-offset: 4px;
+  outline:1px solid black; */
+  opacity: 1;
 }
 .menu {
   @apply text-2xl ml-32;

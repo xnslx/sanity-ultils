@@ -76,7 +76,7 @@ const NestedCarousel = ({ slides, setLockParentScroll }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
   const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
-  const [scrollSnaps, setScrollSnaps] = useState([]);
+
   const scrollPrev = useCallback(() => embla && embla.scrollPrev(), [embla]);
   const scrollNext = useCallback(() => embla && embla.scrollNext(), [embla]);
   const onSelect = useCallback(() => {
@@ -89,21 +89,22 @@ const NestedCarousel = ({ slides, setLockParentScroll }) => {
   const PARALLAX_FACTOR = 1.0;
 
   const [parallaxValues, setParallaxValues] = useState([]);
+  console.log('parallaxValues', parallaxValues);
+
+  const scrollTo = useCallback(
+    (index) => {
+      embla && embla.scrollTo(index);
+    },
+    [embla]
+  );
 
   const onScroll = useCallback(() => {
     if (!embla) return;
 
     const engine = embla.internalEngine();
-    console.log('engine', engine);
-    const {
-      limit,
-      target,
-      location,
-      offsetLocation,
-      scrollTo,
-      translate,
-      scrollBody,
-    } = engine;
+    // console.log('engine', engine);
+    const { limit, target, location, offsetLocation, translate, scrollBody } =
+      engine;
     let edge: number | null = null;
 
     if (limit.reachedMax(location.get())) edge = limit.max;
@@ -141,17 +142,18 @@ const NestedCarousel = ({ slides, setLockParentScroll }) => {
       return diffToTarget * (PARALLAX_FACTOR * length) * -100;
     });
     setParallaxValues(styles);
+
+    console.log('styles', styles);
   }, [embla, setParallaxValues]);
 
   useEffect(() => {
     if (!embla) return;
     onSelect();
     onScroll();
-    // setScrollSnaps(embla.scrollSnapList());
     embla.on('select', onSelect);
     embla.on('scroll', onScroll);
     embla.on('resize', onScroll);
-  }, [embla, onSelect, onScroll, setScrollSnaps]);
+  }, [embla, onSelect, onScroll]);
 
   return (
     <>
@@ -159,7 +161,6 @@ const NestedCarousel = ({ slides, setLockParentScroll }) => {
         <div className="embla__viewport" ref={viewportRef}>
           <div className="embla__container__nested">
             {slides.map((s, index) => {
-              console.log('139', index);
               return (
                 <VariedTypeCarousel
                   s={s}
@@ -173,7 +174,7 @@ const NestedCarousel = ({ slides, setLockParentScroll }) => {
         </div>
       </div>
       <div className="embla__dots">
-        {scrollSnaps.map((_, index) => {
+        {parallaxValues.map((_, index) => {
           return (
             <DotButton
               key={index}

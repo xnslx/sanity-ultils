@@ -54,7 +54,6 @@ export default function Carousels({ data }: any) {
     if (!embla) return;
 
     const engine = embla.internalEngine();
-    console.log('engine', engine);
     const {
       limit,
       target,
@@ -115,7 +114,6 @@ export default function Carousels({ data }: any) {
                 },
                 index: React.Key | null | undefined
               ) => {
-                console.log('84', index);
                 return (
                   <div className="embla__slide" key={index}>
                     <NestedCarousel
