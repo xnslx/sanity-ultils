@@ -4,12 +4,14 @@ import imageUrlBuilder from '@sanity/image-url';
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import clsx from 'clsx';
 import { SanityImageAssetDocument } from '@sanity/client';
+import { useDotButton } from './EmblaCarouselDotButton';
 
-const VariedTypeCarousel = ({ s, parallaxValues, key, index }) => {
+const VariedTypeCarousel = ({ s, parallaxValues, index }: any) => {
+  console.log('parallaxValues[index]', parallaxValues[index]);
   switch (s._type) {
     case 'image':
       return (
-        <div className="embla__slide__nested" key={key}>
+        <div className="embla__slide__nested" key={index}>
           <div
             className="embla__slide__inner__nested"
             style={{ transform: `translateY(${parallaxValues[index]}%)` }}
@@ -31,6 +33,7 @@ const VariedTypeCarousel = ({ s, parallaxValues, key, index }) => {
               style={{ transform: `translateY(${parallaxValues[index]}%)` }}
             >
               <video
+                //@ts-ignore
                 autoPlay="autoplay"
                 muted
                 playsInline
@@ -63,17 +66,19 @@ const VariedTypeCarousel = ({ s, parallaxValues, key, index }) => {
   }
 };
 
-const NestedCarousel = ({ slides, setLockParentScroll }) => {
+const NestedCarousel = ({ slides }: any) => {
   const [viewportRef, embla] = useEmblaCarousel(
     {
       axis: 'y',
-      skipSnaps: true,
-      loop: false,
+      skipSnaps: false,
+      loop: true,
+      dragFree: false,
     },
     [WheelGesturesPlugin({ forceWheelAxis: 'y' })]
   );
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const { selectedIndex, scrollSnaps, onDotButtonClick } = useDotButton(embla);
+
   const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
   const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
 
@@ -81,18 +86,19 @@ const NestedCarousel = ({ slides, setLockParentScroll }) => {
   const scrollNext = useCallback(() => embla && embla.scrollNext(), [embla]);
   const onSelect = useCallback(() => {
     if (!embla) return;
-    setSelectedIndex(embla.selectedScrollSnap());
+
     setPrevBtnEnabled(embla.canScrollPrev());
     setNextBtnEnabled(embla.canScrollNext());
-  }, [embla, setSelectedIndex]);
+  }, [embla]);
 
-  const PARALLAX_FACTOR = 1.0;
+  const PARALLAX_FACTOR = 1;
 
   const [parallaxValues, setParallaxValues] = useState([]);
   console.log('parallaxValues', parallaxValues);
 
   const scrollTo = useCallback(
-    (index) => {
+    (index: number) => {
+      if (!embla) return;
       embla && embla.scrollTo(index);
     },
     [embla]
@@ -105,22 +111,14 @@ const NestedCarousel = ({ slides, setLockParentScroll }) => {
     // console.log('engine', engine);
     const { limit, target, location, offsetLocation, translate, scrollBody } =
       engine;
-    let edge: number | null = null;
 
-    if (limit.reachedMax(location.get())) edge = limit.max;
-    if (limit.reachedMin(location.get())) edge = limit.min;
-
-    if (edge !== null) {
-      offsetLocation.set(edge);
-      location.set(edge);
-      target.set(edge);
-      translate.to(edge);
-      translate.toggleActive(false);
-      scrollBody.useDuration(0).useFriction(0);
-      scrollTo.distance(0, false);
-    } else {
-      translate.toggleActive(true);
+    if (location.get() > limit.max) {
+      scrollTo(0);
     }
+    if (location.get() < limit.min) {
+      scrollTo(embla.scrollSnapList().length - 1);
+    }
+
     const scrollProgress = embla.scrollProgress();
     const length = embla.slideNodes().length;
 
@@ -130,7 +128,7 @@ const NestedCarousel = ({ slides, setLockParentScroll }) => {
 
       if (engine.options.loop) {
         engine.slideLooper.loopPoints.forEach((loopItem) => {
-          const target = loopItem.getTarget();
+          const target = loopItem.target();
           if (index === loopItem.index && target !== 0) {
             const sign = Math.sign(target);
             if (sign === -1) diffToTarget = scrollSnap - (1 + scrollProgress);
@@ -141,6 +139,7 @@ const NestedCarousel = ({ slides, setLockParentScroll }) => {
       // return diffToTarget * (-1 / PARALLAX_FACTOR) * 100;
       return diffToTarget * (PARALLAX_FACTOR * length) * -100;
     });
+    //@ts-ignore
     setParallaxValues(styles);
 
     console.log('styles', styles);
@@ -152,19 +151,66 @@ const NestedCarousel = ({ slides, setLockParentScroll }) => {
     onScroll();
     embla.on('select', onSelect);
     embla.on('scroll', onScroll);
-    embla.on('resize', onScroll);
   }, [embla, onSelect, onScroll]);
+
+  // const dummyArray = [
+  //   { id: 1, content: 'Div 1', bgColor: 'bg-red-300' },
+  //   { id: 2, content: 'Div 2', bgColor: 'bg-green-300' },
+  //   { id: 3, content: 'Div 3', bgColor: 'bg-blue-300' },
+  //   { id: 4, content: 'Div 4', bgColor: 'bg-yellow-300' },
+  //   { id: 5, content: 'Div 5', bgColor: 'bg-purple-300' },
+  // ];
 
   return (
     <>
-      <div className="embla__nested">
-        <div className="embla__viewport" ref={viewportRef}>
-          <div className="embla__container__nested">
-            {slides.map((s, index) => {
+      {/* <div className="embla__nested">
+        <div className="embla__nested__viewport" ref={viewportRef}>
+          <div className="embla__nested__container">
+            {slides.map((s: any, index: any) => {
               return (
                 <VariedTypeCarousel
                   s={s}
-                  key={index}
+                  index={index}
+                  parallaxValues={parallaxValues}
+                />
+              );
+            })}
+          </div>
+        </div>
+      </div> */}
+      {/* <div className="relative max-w-full h-full">
+        <div className="h-screen w-full" ref={viewportRef}>
+          <div className="flex flex-col h-screen">
+            {dummyArray.map((d, index) => {
+              console.log('183', index);
+              return (
+                <div className="relative min-h-screen">
+                  <div
+                    className={`h-screen relative flex justify-center items-center overflow-hidden ${d.bgColor}`}
+                  >
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        transform: `translateY(${parallaxValues[index]}%)`,
+                      }}
+                    >
+                      <div className="absolute top-1/2 left-1/2 block w-auto min-h-full min-w-full max-w-none"></div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div> */}
+
+      <div className="relative max-w-full h-full">
+        <div className="h-screen w-full" ref={viewportRef}>
+          <div className="flex flex-col h-screen">
+            {slides.map((s: any, index: any) => {
+              return (
+                <VariedTypeCarousel
+                  s={s}
                   index={index}
                   parallaxValues={parallaxValues}
                 />
@@ -179,7 +225,7 @@ const NestedCarousel = ({ slides, setLockParentScroll }) => {
             <DotButton
               key={index}
               selected={index === selectedIndex}
-              onClick={() => scrollTo(index)}
+              onClick={() => onDotButtonClick(index)}
             />
           );
         })}
@@ -188,7 +234,7 @@ const NestedCarousel = ({ slides, setLockParentScroll }) => {
   );
 };
 
-export const DotButton = ({ selected, onClick }) => {
+export const DotButton = ({ selected, onClick }: any) => {
   return (
     <button
       className={clsx('embla__dot', { 'is-selected': selected })}

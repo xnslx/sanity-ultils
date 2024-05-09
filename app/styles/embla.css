@@ -1,30 +1,46 @@
 .embla {
   @apply relative ml-auto mr-auto;
-  --slide-spacing: 1rem;
+  --slide-spacing: 0rem;
   --slide-size: 100%;
   --slide-height: 100vh;
 }
-.embla__nested {
-  @apply relative max-w-full max-h-full mx-auto;
 
-  /* background-color: #f7f799; */
-}
 .embla__viewport {
-  @apply overflow-hidden max-w-full max-h-full;
+  @apply overflow-hidden w-full;
 }
-.is-wheel-dragging {
-  @apply min-w-full min-h-full;
+
+.embla__viewport.is-draggable {
+  cursor: move;
+  cursor: grab;
 }
+
+.embla__viewport.is-dragging {
+  cursor: grabbing;
+}
+
 .embla__container {
-  @apply flex flex-row h-screen min-w-0 max-w-full max-h-full;
+  @apply flex flex-row;
 }
-.embla__container__nested {
-  @apply flex flex-col select-none relative min-w-full;
-  height: calc(var(--slide-spacing) + var(--slide-height));
-}
+
 .embla__slide {
   @apply relative  min-w-full;
 }
+
+.embla__nested {
+  @apply relative max-w-full h-full;
+
+  /* background-color: #f7f799; */
+}
+
+.embla__nested__viewport {
+  @apply overflow-hidden w-full;
+}
+
+.embla__nested__container {
+  @apply flex flex-col select-none relative min-w-full;
+  height: calc(var(--slide-spacing) + var(--slide-height));
+}
+
 .embla__slide__nested {
   @apply relative min-w-full  overflow-hidden;
   flex: 0 0 var(--slide-size);
