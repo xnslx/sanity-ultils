@@ -1,3 +1,7 @@
+::-webkit-scrollbar {
+  display: none;
+}
+
 .embla {
   @apply relative ml-auto mr-auto;
   --slide-spacing: 0rem;
@@ -20,10 +24,11 @@
 
 .embla__container {
   @apply flex flex-row;
+  touch-action: none;
 }
 
 .embla__slide {
-  @apply relative  min-w-full;
+  @apply relative  min-w-full overflow-hidden overflow-y-hidden h-full;
 }
 
 .embla__nested {
@@ -33,7 +38,16 @@
 }
 
 .embla__nested__viewport {
-  @apply overflow-hidden w-full;
+  @apply overflow-hidden w-full overflow-y-hidden;
+}
+
+.embla__nested__viewport.is-draggable {
+  cursor: move;
+  cursor: grab;
+}
+
+.embla__nested__viewport.is-dragging {
+  cursor: grabbing;
 }
 
 .embla__nested__container {

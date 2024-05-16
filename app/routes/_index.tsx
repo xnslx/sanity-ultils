@@ -64,7 +64,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export default function Index() {
   const { initial, query, params, carouselData } =
     useLoaderData<typeof loader>();
-  console.log('c', carouselData);
   const { data, loading } = useQuery<typeof initial.data>(query, params, {
     //@ts-ignore
     initial,
@@ -82,11 +81,11 @@ export default function Index() {
     <div className="relative">
       {isShowCarousels && (
         <>
-          <div className="flex flex-row justify-around absolute">
+          {/* <div className="flex flex-row justify-around absolute">
             {carousels.map((c: any) => (
               <h1>{c.menu}</h1>
             ))}
-          </div>
+          </div> */}
           <Carousels data={carouselsList} />
         </>
       )}

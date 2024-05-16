@@ -16,6 +16,8 @@ export const useNestedEmblaCarousel = (embla: any) => {
     engine.target.set(engine.location);
     engine.scrollTo.distance(0, false);
     engine.translate.toggleActive(true);
+
+    setParentIsLocked(false); // Release lock on parent scroll
   }, [embla]);
 
   const lockParentScroll = useCallback(() => {
@@ -25,6 +27,8 @@ export const useNestedEmblaCarousel = (embla: any) => {
     lastLocation.current = engine.location.get();
     //@ts-ignore
     onPointerUp.current = releaseParentScroll;
+
+    setParentIsLocked(true); // Lock parent scroll
   }, [embla, releaseParentScroll]);
 
   useEffect(() => {

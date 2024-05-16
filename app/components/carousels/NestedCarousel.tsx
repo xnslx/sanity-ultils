@@ -1,13 +1,19 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+} from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import imageUrlBuilder from '@sanity/image-url';
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import clsx from 'clsx';
 import { SanityImageAssetDocument } from '@sanity/client';
 import { useDotButton } from './EmblaCarouselDotButton';
+import { document } from 'postcss';
 
 const VariedTypeCarousel = ({ s, parallaxValues, index }: any) => {
-  console.log('parallaxValues[index]', parallaxValues[index]);
   switch (s._type) {
     case 'image':
       return (
@@ -45,28 +51,13 @@ const VariedTypeCarousel = ({ s, parallaxValues, index }: any) => {
             </div>
           </div>
         </div>
-        // <div className={styles.video}>
-        //   <iframe
-        //     ref={(node) => {
-        //       observe(node);
-        //     }}
-        //     src={`https://player.vimeo.com/video/${s.id}?background=1&autoplay=1&autopause=0&loop=1&muted=1`}
-        //     frameBorder="0"
-        //     title={s.title}
-        //     allow="autoplay"
-        //     style={{
-        //       height: '100vw',
-        //       minWidth: '150vh',
-        //     }}
-        //   ></iframe>
-        // </div>
       );
     default:
       return null;
   }
 };
 
-const NestedCarousel = ({ slides }: any) => {
+const NestedCarousel = ({ slides, id }: any) => {
   const [viewportRef, embla] = useEmblaCarousel(
     {
       axis: 'y',
@@ -94,7 +85,6 @@ const NestedCarousel = ({ slides }: any) => {
   const PARALLAX_FACTOR = 1;
 
   const [parallaxValues, setParallaxValues] = useState([]);
-  console.log('parallaxValues', parallaxValues);
 
   const scrollTo = useCallback(
     (index: number) => {
@@ -108,7 +98,6 @@ const NestedCarousel = ({ slides }: any) => {
     if (!embla) return;
 
     const engine = embla.internalEngine();
-    // console.log('engine', engine);
     const { limit, target, location, offsetLocation, translate, scrollBody } =
       engine;
 
@@ -136,13 +125,14 @@ const NestedCarousel = ({ slides }: any) => {
           }
         });
       }
+
       // return diffToTarget * (-1 / PARALLAX_FACTOR) * 100;
       return diffToTarget * (PARALLAX_FACTOR * length) * -100;
     });
     //@ts-ignore
     setParallaxValues(styles);
 
-    console.log('styles', styles);
+    // console.log('styles', styles);
   }, [embla, setParallaxValues]);
 
   useEffect(() => {
@@ -152,6 +142,31 @@ const NestedCarousel = ({ slides }: any) => {
     embla.on('select', onSelect);
     embla.on('scroll', onScroll);
   }, [embla, onSelect, onScroll]);
+
+  const containerRef = useRef(null);
+
+  const wheelHandler = (e: any) => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const deltaY = e.deltaY;
+
+    const deltaX = e.deltaX;
+
+    if (Math.abs(deltaY) !== 0 && Math.abs(deltaX) == 0) {
+      const el = window.document.querySelector(`#embla__slide__${id}`);
+      // console.log('el', el);
+      if (el instanceof HTMLElement) {
+        el.style.overflowX = 'hidden';
+      }
+    } else {
+      const el = window.document.querySelector(`#embla__slide__${id}`);
+      // console.log('el', el);
+      if (el instanceof HTMLElement) {
+        el.style.overflowX = 'auto'; // Or any other value you want to set
+      }
+    }
+  };
 
   // const dummyArray = [
   //   { id: 1, content: 'Div 1', bgColor: 'bg-red-300' },
@@ -204,7 +219,11 @@ const NestedCarousel = ({ slides }: any) => {
         </div>
       </div> */}
 
-      <div className="relative max-w-full h-full">
+      <div
+        className="relative max-w-full h-full"
+        ref={containerRef}
+        onWheel={wheelHandler}
+      >
         <div className="h-screen w-full" ref={viewportRef}>
           <div className="flex flex-col h-screen">
             {slides.map((s: any, index: any) => {
@@ -213,6 +232,7 @@ const NestedCarousel = ({ slides }: any) => {
                   s={s}
                   index={index}
                   parallaxValues={parallaxValues}
+                  key={index}
                 />
               );
             })}

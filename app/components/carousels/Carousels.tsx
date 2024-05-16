@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 
@@ -35,6 +35,7 @@ export default function Carousels({ data }: any) {
     [WheelGesturesPlugin({ forceWheelAxis: 'x' })]
   );
   const setLockParentScroll = useNestedEmblaCarousel(embla);
+
   const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
   const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
   const scrollPrev = useCallback(() => {
@@ -108,11 +109,16 @@ export default function Carousels({ data }: any) {
                 index: React.Key | null | undefined
               ) => {
                 return (
-                  <div className="embla__slide" key={index}>
+                  <div
+                    className="embla__slide"
+                    id={`embla__slide__${index}`}
+                    key={index}
+                  >
                     <NestedCarousel
                       //@ts-ignore
                       slides={s.carouselItems}
                       setLockParentScroll={setLockParentScroll}
+                      id={index}
                     />
                   </div>
                 );
